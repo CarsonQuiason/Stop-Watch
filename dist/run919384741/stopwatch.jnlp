@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="stopwatch.jar" size="24558" download="eager" />
+    <jar href="stopwatch.jar" size="24263" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="stopwatch" >
     <param name="requiredFXVersion" value="8.0+"/>

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package stopwatch;
 
 
@@ -23,6 +18,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.geometry.Insets;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -101,7 +98,9 @@ enum Action {
 public class Stopwatch extends Application {
     public int previousSecond = 0;
     public String convertTime(long epochMilli){
-
+        if(epochMilli < 0){
+            return("00:00.00");
+        }
         long sec = (epochMilli / 1000) % 60;
         long min = (epochMilli / 60000) % 60;
         long dec = epochMilli % 1000;
@@ -200,7 +199,15 @@ public class Stopwatch extends Application {
             int recordCount = 0;
             @Override
             public void handle(ActionEvent event) {
-                if(timer.isStopped()){
+                if(timer.isTimeUp() && !timer.isStopped()){
+                    Alert alert = new Alert(AlertType.INFORMATION);
+                    alert.setTitle("Out of Time");
+                    alert.setHeaderText("Message");
+                    alert.setContentText("Time is up, no more records.");
+                    alert.showAndWait();
+                }
+                else{
+                   if(timer.isStopped()){
                     System.out.println("RESETTING");
                     timeDisplay.setText("00:00.00");
                     timerLabel.setText("00.00");
@@ -244,9 +251,10 @@ public class Stopwatch extends Application {
                         recordCount = 0;
                     }
                 }
-            }
-
+                }
+            } 
         }
+                
     });
         
         AnimationTimer tracker;
