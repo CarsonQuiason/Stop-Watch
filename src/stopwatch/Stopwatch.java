@@ -54,9 +54,16 @@ class Timer {
     public void stop() {
         events.add(new Pair(Instant.now(), Action.STOP));
     }
-    
+    public boolean isTimeUp(){
+        return this.getTotalStartTime() >= this.getTargetMilli();
+    }
     public boolean isStopped(){
         return events.get(events.size()-1).getValue() == Action.STOP;
+    }
+    
+    public void reset(){
+        events.clear();
+        this.stop();
     }
     
     public int getTargetMilli(){
@@ -92,7 +99,7 @@ enum Action {
 }
 
 public class Stopwatch extends Application {
-    
+    public int previousSecond = 0;
     public String convertTime(long epochMilli){
 
         long sec = (epochMilli / 1000) % 60;
@@ -150,7 +157,7 @@ public class Stopwatch extends Application {
         
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(grid, 600, 400);
+        Scene scene = new Scene(grid, 800, 800);
         grid.setPadding(new Insets(10,10,10,10));
         grid.setHgap(4);
         grid.setVgap(4);
@@ -203,7 +210,8 @@ public class Stopwatch extends Application {
                     recordText1.setText("Rec");
                     recordText2.setText("Rec");
                     recordText3.setText("Rec");
-                    
+                    cHand.setRotate(-6.0);
+                    timer.reset();
                 }
                 else{
                     if(records.isEmpty()){
@@ -245,10 +253,18 @@ public class Stopwatch extends Application {
         tracker = new AnimationTimer(){
             @Override
             public void handle(long now) {
+                if(timer.isTimeUp()){
+                    timerText.setText("Time is up!");
+                }
                 long startTime = timer.getTotalStartTime();
                 long timeLeft = timer.getTargetMilli() - startTime;
                 timeDisplay.setText(convertTime(startTime));
                 timerLabel.setText(convertTime(timeLeft));
+                if((timer.getTotalStartTime() / 1000) != previousSecond){
+                    cHand.setRotate(cHand.getRotate() + 6);
+                    previousSecond = timer.getTotalStartTime() / 1000;
+                }
+                
                 
             }
         };
